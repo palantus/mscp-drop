@@ -1,0 +1,61 @@
+{
+  "name": "drop",
+  "serve": [
+    {
+      "name": "raw",
+      "title": "Get raw file",
+      "description": "",
+      "returntype": "custom",
+      "namespace": "",
+      "args": [
+        {
+          "name": "hash",
+          "title": "Hash",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "file",
+      "title": "Get file information",
+      "description": "",
+      "returntype": "object",
+      "namespace": "",
+      "args": [
+        {
+          "name": "hash",
+          "title": "",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "upload",
+      "title": "Upload file",
+      "description": "",
+      "returntype": "string",
+      "namespace": "",
+      "args": []
+    },
+    {
+      "name": "download",
+      "title": "Download file",
+      "description": "",
+      "returntype": "download",
+      "namespace": "",
+      "args": [
+        {
+          "name": "hash",
+          "title": "",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ]
+}

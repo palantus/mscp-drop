@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="/mscp/libs/js/jquery.min.js"></script>
+	<script src="/upload.js"></script>
+</head>
+<body>
+
+  <form id="fileupload">
+    <table>
+      <tr>
+        <td colspan="2">File Upload</td>
+      </tr>
+      <tr>
+        <th>Select File </th>
+        <td><input id="csv" name="csv" type="file" /></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" value="Upload"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Links</th>
+      </tr>
+    </thead>
+    <tbody id="uploadedfiles">
+    </tbody>
+  </table>
+</body>
+</html>
