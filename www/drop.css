@@ -19,6 +19,8 @@ a{
 #uploadbutton{
   margin-top: 10px;
   width: 100%;
+  height: 30px;
+  font-size: 110%;
 }
 
 #filestable{
