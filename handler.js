@@ -24,7 +24,8 @@ class Handler{
     if(!isFile)
       throw "Unknown file"
 
-    return {name: hash, path: filename}
+    let meta = await this.getMeta(hash)
+    return {name: meta.filename, path: filename}
   }
 
   async raw(hash){
@@ -63,6 +64,11 @@ class Handler{
     }
   }
 
+  async exists(hash){
+    let filename = path.join(this.global.setup.storagepath, hash)
+    return await new Promise((r) => fs.lstat(filename, (err, stats) => r(err ? false : stats.isFile(filename))))
+  }
+
   async upload(){
     let files = []
     for(let filedef in this.request.req.files){
@@ -73,14 +79,17 @@ class Handler{
                     .update(file.data, 'utf8')
                     .digest('hex')
 
-      let filename = path.join(this.global.setup.storagepath, hash)
-      await file.mv(filename)
+      if(!await this.exists(hash)){
+        let filename = path.join(this.global.setup.storagepath, hash)
+        await file.mv(filename)
 
-      let fileSize = await new Promise((r) => fs.lstat(filename, (err, stats) => r(err ? null : stats.size)))
-      let metafilename = path.join(this.global.setup.storagepath, `${hash}.json`)
-      let meta = {hash: hash, filename: file.name, mime: mime.lookup(file.name), size: fileSize}
+        let fileSize = await new Promise((r) => fs.lstat(filename, (err, stats) => r(err ? null : stats.size)))
+        let metafilename = path.join(this.global.setup.storagepath, `${hash}.json`)
+        let meta = {hash: hash, filename: file.name, mime: mime.lookup(file.name), size: fileSize}
 
-      await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
+        await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
+      }
+      
       files.push(await this.file(hash))
     }
 

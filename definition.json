@@ -56,6 +56,22 @@
           "description": ""
         }
       ]
+    },
+    {
+      "name": "exists",
+      "title": "File exists",
+      "description": "",
+      "returntype": "boolean",
+      "namespace": "",
+      "args": [
+        {
+          "name": "hash",
+          "title": "",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ]
     }
   ]
 }
