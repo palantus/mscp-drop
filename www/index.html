@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="/drop.css">
 	<script src="/mscp/libs/js/jquery.min.js"></script>
 	<script src="/mscp/js/browser.js"></script>
 	<script src="/md5.js"></script>
@@ -11,21 +12,21 @@
   <form id="fileupload">
     <table>
       <tr>
-        <td colspan="2">File Upload</td>
+        <td colspan="2" id="header">File Drop</td>
       </tr>
       <tr>
-        <th>Select File </th>
+        <th>Select File: </th>
         <td><input id="chosenfile" name="csv" type="file" /></td>
       </tr>
       <tr>
         <td colspan="2">
-          <input type="submit" value="Upload"/>
+          <input type="submit" value="Begin Upload!" id="uploadbutton"/>
         </td>
       </tr>
     </table>
   </form>
 
-  <table>
+  <table id="filestable" cellspacing="0">
     <thead>
       <tr>
         <th>Filename</th>

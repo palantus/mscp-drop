@@ -1,0 +1,36 @@
+body{
+  font-family: Roboto,sans-serif;
+  background-color: #222;
+  color: #eee;
+  padding: 10px;
+}
+a{
+  color: #eee;
+}
+#header{
+  font-size: 300%;
+  padding-bottom: 10px;
+}
+
+#fileupload{
+  margin-bottom: 10px;
+}
+
+#uploadbutton{
+  margin-top: 10px;
+  width: 100%;
+}
+
+#filestable{
+
+}
+
+#filestable td, #filestable th{
+  border-bottom: 1px solid;
+  padding: 5px;
+  text-align: left;
+}
+
+#filestable td a{
+  padding-right: 5px;
+}
