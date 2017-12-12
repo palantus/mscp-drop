@@ -1,11 +1,8 @@
 "use strict"
 
-const guid = require("guid")
 const moment = require("moment")
 const fs = require("fs")
 const path = require("path")
-const md5File = require('md5-file/promise')
-const md5 = require('md5')
 const mime = require('mime-types')
 const crypto = require('crypto')
 
