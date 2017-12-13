@@ -22,7 +22,6 @@ async function pasteHandler(e) {
             formData.append("image", blob);
             doUploadFile(formData);
         } else if(items[i].type.indexOf("text") !== -1) {
-           // We need to represent the image as a file,
            var content = await new Promise((r) => items[i].getAsString((s) => r(s)));
 
            var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
