@@ -5,7 +5,7 @@ $(function() {
 })
 
 /* Handle paste events */
-function pasteHandler(e) {
+async function pasteHandler(e) {
    if (!e.clipboardData)
     return;
 
@@ -21,6 +21,15 @@ function pasteHandler(e) {
             let formData = new FormData();
             formData.append("image", blob);
             doUploadFile(formData);
+        } else if(items[i].type.indexOf("text") !== -1) {
+           // We need to represent the image as a file,
+           var content = await new Promise((r) => items[i].getAsString((s) => r(s)));
+
+           var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+
+           let formData = new FormData();
+           formData.append("text", blob, "text.txt");
+           doUploadFile(formData);
         }
      }
   }
