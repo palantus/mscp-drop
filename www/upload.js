@@ -14,7 +14,13 @@ async function init(){
 
 function fileUploadClicked(form){
   var formData = new FormData(form);
-  var file = $("#chosenfile")[0];
+  var filesChosen = $("#chosenfile")[0];
+  for(let file of filesChosen.files){
+    readFile(file, formData)
+  }
+}
+
+function readFile(file, formData){
   var reader = new FileReader();
 
   reader.onloadend = async function(event) {
@@ -30,7 +36,7 @@ function fileUploadClicked(form){
     }
   };
 
-  reader.readAsBinaryString(file.files[0]);
+  reader.readAsBinaryString(file);
 }
 
 function doUploadFile(formData){
