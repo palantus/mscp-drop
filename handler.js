@@ -57,9 +57,9 @@ class Handler{
       mime: meta ? meta.mime : null,
       size: meta ? meta.size : null,
       links: {
-        raw: `${this.global.setup.baseurl}/api/raw/${hash}`,
-        download: `${this.global.setup.baseurl}/api/download/${hash}`,
-        self: `${this.global.setup.baseurl}/api/file/${hash}`
+        raw: `${this.global.setup.baseurl}/${hash}`,
+        download: `${this.global.setup.baseurl}/download/${hash}`,
+        self: `${this.global.setup.baseurl}/file/${hash}`
       }
     }
   }
@@ -89,7 +89,7 @@ class Handler{
 
         await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
       }
-      
+
       files.push(await this.file(hash))
     }
 
