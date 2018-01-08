@@ -39,9 +39,9 @@ function readFile(file, formData){
   reader.readAsBinaryString(file);
 }
 
-function doUploadFile(formData){
+function doUploadFile(formData, accessKey){
   $.ajax({
-        url: '/api/upload',
+        url: '/api/upload' + (accessKey ? "?accessKey=" + accessKey : ''),
         type: 'POST',
         data: formData,
         async: true,
@@ -54,8 +54,17 @@ function doUploadFile(formData){
             $("#uploadedfiles").append(`<tr><td>${f.filename}</td><td><a href="${f.links.download}">Download</a> <a href="${f.links.raw}">Raw</a></td></tr>`)
           }
         },
-        error: function(){
-            alert("error in ajax form submission");
+        error: function(e){
+          if(e.status == 403){
+            let key = prompt("You do not have access to this functionality. Enter an access key to continue.")
+            if(key){
+              return doUploadFile(formData, key)
+            } else {
+              throw "No AccessKey entered"
             }
+          } else {
+            alert("Could not upload file");
+          }
+        }
     });
 }
