@@ -9,12 +9,17 @@ const crypto = require('crypto')
 class Handler{
 
   async initFirst(){
-    this.global.setup = await new Promise((r) => fs.readFile(path.join(__dirname, "setup.json"), "utf-8", (err, file) => r(JSON.parse(file))))
+    this.global.setup = this.mscp.setupHandler.setup
 
     if(!this.global.setup.baseurl)
       this.global.setup.baseurl = "http://localhost"
 
-      this.global.setup.storagepath = path.resolve(this.global.setup.storagepath)
+    if(!this.global.setup.storagepath){
+      console.log("storagepath not defined. Using current directory.")
+      this.global.setup.storagepath = "."
+    }
+
+    this.global.setup.storagepath = path.resolve(this.global.setup.storagepath)
   }
 
   async download(hash){
