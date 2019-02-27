@@ -32,7 +32,7 @@ function readFile(file, formData){
       doUploadFile(formData)
     } else {
       let f = await mscp.file(md5)
-      $("#uploadedfiles").append(`<tr><td>${f.filename}</td><td><a href="${f.links.download}">Download</a> <a href="${f.links.raw}">Raw</a></td></tr>`)
+      $("#uploadedfiles").append(`<tr><td>${f.filename}</td><td>${f.hash}</td><<td><a href="${f.links.download}" target="_blank">Download</a> <a href="${f.links.raw}" target="_blank">Raw</a></td>/tr>`)
     }
   };
 
@@ -51,7 +51,7 @@ function doUploadFile(formData, accessKey){
         success: function (returndata) {
           let files = returndata.result;
           for(let f of files){
-            $("#uploadedfiles").append(`<tr><td>${f.filename}</td><td><a href="${f.links.download}">Download</a> <a href="${f.links.raw}">Raw</a></td></tr>`)
+            $("#uploadedfiles").append(`<tr><td>${f.filename}</td><td>${f.hash}</td><<td><a href="${f.links.download}" target="_blank">Download</a> <a href="${f.links.raw}" target="_blank">Raw</a></td></tr>`)
           }
         },
         error: function(e){
