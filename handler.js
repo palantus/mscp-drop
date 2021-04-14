@@ -63,7 +63,7 @@ class Handler{
       filename: meta ? meta.filename : null,
       mime: meta ? meta.mime : null,
       size: meta ? meta.size : null,
-      timestamp: meta?.timestamp || null,
+      timestamp: meta ? meta.timestamp : null,
       links: {
         raw: `${this.global.setup.baseurl}/api/raw/${hash}/${meta.filename}`,
         download: `${this.global.setup.baseurl}/api/download/${hash}/${meta.filename}`,
