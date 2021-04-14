@@ -65,9 +65,9 @@ class Handler{
       size: meta ? meta.size : null,
       timestamp: meta?.timestamp || null,
       links: {
-        raw: `${this.global.setup.baseurl}/api/raw/${hash}`,
-        download: `${this.global.setup.baseurl}/api/download/${hash}`,
-        self: `${this.global.setup.baseurl}/api/file/${hash}`
+        raw: `${this.global.setup.baseurl}/api/raw/${hash}/${meta.filename}`,
+        download: `${this.global.setup.baseurl}/api/download/${hash}/${meta.filename}`,
+        self: `${this.global.setup.baseurl}/api/file/${hash}/${meta.filename}`
       }
     }
   }
@@ -88,7 +88,7 @@ class Handler{
                       .digest('hex')
 
         if(await this.exists(hash)){
-          await this.touch(hash)
+          await this.touch(hash, f.name)
         } else {
           let filename = path.join(this.global.setup.storagepath, hash)
           await f.mv(filename)
@@ -115,9 +115,11 @@ class Handler{
     return files
   }
 
-  async touch(hash){
+  async touch(hash, expectedFilename){
     let meta = await this.getMeta(hash)
     meta.timestamp = this.getTimestamp()
+    if(expectedFilename)
+      meta.filename = expectedFilename
     let metafilename = path.join(this.global.setup.storagepath, `${hash}.json`)
     await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
     return true;

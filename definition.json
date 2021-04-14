@@ -89,6 +89,13 @@
           "type": "string",
           "required": true,
           "description": ""
+        },
+        {
+          "name": "expectedFilename",
+          "title": "Override filename",
+          "type": "string",
+          "required": false,
+          "description": ""
         }
       ]
     }

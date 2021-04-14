@@ -33,14 +33,23 @@ function readFile(file, formData){
     if(!exists){
       doUploadFile(formData)
     } else {
-      await mscp.touch(md5)
+      await mscp.touch(md5, file.name)
       let f = await mscp.file(md5)
-      $("#uploadedfiles").prepend(`<tr><td>${f.filename}</td><td>${f.hash}</td><<td><a href="${f.links.download}" target="_blank">Download</a> <a href="${f.links.raw}" target="_blank">Raw</a></td>/tr>`)
+      addFileToList(f)
       storeFileInfoLocally(f)
     }
   };
 
   reader.readAsBinaryString(file);
+}
+
+function addFileToList(f){
+  $("#uploadedfiles td:nth-child(2)").each((i, e) => {
+    if(e.innerText == f.hash){
+      e.parentElement.remove();
+    }
+  })
+  $("#uploadedfiles").prepend(`<tr><td>${f.filename}</td><td>${f.hash}</td><<td><a href="${f.links.download}" target="_blank">Download</a> <a href="${f.links.raw}" target="_blank">Raw</a></td>/tr>`)
 }
 
 function doUploadFile(formData, accessKey){
@@ -55,7 +64,7 @@ function doUploadFile(formData, accessKey){
         success: function (returndata) {
           let files = returndata.result;
           for(let f of files){
-            $("#uploadedfiles").prepend(`<tr><td>${f.filename}</td><td>${f.hash}</td><<td><a href="${f.links.download}" target="_blank">Download</a> <a href="${f.links.raw}" target="_blank">Raw</a></td></tr>`)
+            addFileToList(f)
             storeFileInfoLocally(f)
           }
         },
@@ -76,8 +85,13 @@ function doUploadFile(formData, accessKey){
 
 function storeFileInfoLocally(f){
   let allFiles = JSON.parse(localStorage.dropfiles || "[]")
-  if(allFiles.find(file => file.hash == f.hash)) return;
-  allFiles.push(f)
+  let existingFile = allFiles.find(file => file.hash == f.hash)
+  if(existingFile){
+    existingFile.filename = f.filename
+    existingFile.timestamp = f.timestamp
+  } else {
+    allFiles.push(f)
+  }
   allFiles = allFiles.filter(file => new Date(file.timestamp).getTime() > new Date().getTime() - (5*24*60*60*1000)) // 5 days
   localStorage.dropfiles = JSON.stringify(allFiles)
 }
