@@ -34,9 +34,9 @@ a{
   background-color: gray;
 }
 
-#filestable{
-
-}
+#filestable th:nth-child(1){min-width: 250px;}
+#filestable th:nth-child(2){min-width: 276px;}
+#filestable th:nth-child(3){min-width: 125px;}
 
 #filestable td, #filestable th{
   border-bottom: 1px solid;
@@ -46,4 +46,9 @@ a{
 
 #filestable td a{
   padding-right: 5px;
+}
+
+#clearcache {
+  display: none;
+  margin-top: 10px;
 }

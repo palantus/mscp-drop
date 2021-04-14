@@ -74,6 +74,23 @@
           "description": ""
         }
       ]
+    },
+    {
+      "name": "touch",
+      "title": "Touch file",
+      "description": "",
+      "returntype": "boolean",
+      "namespace": "",
+      "default": "",
+      "args": [
+        {
+          "name": "hash",
+          "title": "Hash",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ]
     }
   ]
 }

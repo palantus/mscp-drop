@@ -6,6 +6,8 @@ const path = require("path")
 const mime = require('mime-types')
 const crypto = require('crypto')
 
+const cleanupAge = 31*24*60*60*1000; //31 days
+
 class Handler{
 
   async initFirst(){
@@ -61,10 +63,11 @@ class Handler{
       filename: meta ? meta.filename : null,
       mime: meta ? meta.mime : null,
       size: meta ? meta.size : null,
+      timestamp: meta?.timestamp || null,
       links: {
-        raw: `${this.global.setup.baseurl}/${hash}`,
-        download: `${this.global.setup.baseurl}/download/${hash}`,
-        self: `${this.global.setup.baseurl}/file/${hash}`
+        raw: `${this.global.setup.baseurl}/api/raw/${hash}`,
+        download: `${this.global.setup.baseurl}/api/download/${hash}`,
+        self: `${this.global.setup.baseurl}/api/file/${hash}`
       }
     }
   }
@@ -84,13 +87,21 @@ class Handler{
                       .update(f.data, 'utf8')
                       .digest('hex')
 
-        if(!await this.exists(hash)){
+        if(await this.exists(hash)){
+          await this.touch(hash)
+        } else {
           let filename = path.join(this.global.setup.storagepath, hash)
           await f.mv(filename)
 
           let fileSize = await new Promise((r) => fs.lstat(filename, (err, stats) => r(err ? null : stats.size)))
           let metafilename = path.join(this.global.setup.storagepath, `${hash}.json`)
-          let meta = {hash: hash, filename: f.name, mime: mime.lookup(f.name), size: fileSize}
+          let meta = {
+            hash: hash, 
+            filename: f.name, 
+            mime: mime.lookup(f.name), 
+            size: fileSize,
+            timestamp: this.getTimestamp()
+          }
 
           await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
         }
@@ -102,6 +113,14 @@ class Handler{
     this.cleanup()
 
     return files
+  }
+
+  async touch(hash){
+    let meta = await this.getMeta(hash)
+    meta.timestamp = this.getTimestamp()
+    let metafilename = path.join(this.global.setup.storagepath, `${hash}.json`)
+    await new Promise((r) => fs.writeFile(metafilename, JSON.stringify(meta), 'utf8', () => r()))
+    return true;
   }
 
   async getMeta(hash){
@@ -126,15 +145,28 @@ class Handler{
     let uploadsDir = this.global.setup.storagepath;
     let files = await new Promise((r) => fs.readdir(uploadsDir, (err, files) => r(files)))
 
-    for(let file of files){
-      let stat = await new Promise((r) => fs.stat(path.join(uploadsDir, file), (err, stat) => r(stat)))
-
-      let endTime = new Date(stat.ctime).getTime() + (31*24*60*60*1000); //31 days
-      let now = new Date().getTime();
-      if (now > endTime) {
-        fs.unlink(path.join(uploadsDir, file), () => console.log(`Cleanup: Deleted file: ${file}`))
+    for(let file of files.filter(name => !name.endsWith(".json"))){
+      let meta = await this.getMeta(file);
+      if(meta && meta.timestamp){
+        if(new Date(this.getTimestamp()).getTime() - cleanupAge > new Date(meta.timestamp).getTime()){
+          fs.unlink(path.join(uploadsDir, file), () => console.log(`Cleanup_meta: Deleted file: ${file}`))
+          fs.unlink(path.join(uploadsDir, `${file}.json`), () => console.log(`Cleanup_meta: Deleted file: ${file}`))
+        }
+      } else {
+        let stat = await new Promise((r) => fs.stat(path.join(uploadsDir, file), (err, stat) => r(stat)))
+        let endTime = new Date(stat.ctime).getTime() + cleanupAge
+        let now = new Date().getTime();
+        if (now > endTime) {
+          fs.unlink(path.join(uploadsDir, file), () => console.log(`Cleanup_fs: Deleted file: ${file}`))
+          fs.unlink(path.join(uploadsDir, `${file}.json`), () => console.log(`Cleanup_fs: Deleted file: ${file}`))
+        }
       }
     }
+  }
+
+  getTimestamp() {
+    let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    return (new Date(Date.now() - tzoffset)).toISOString().slice(0, -5);
   }
 }
 
