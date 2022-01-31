@@ -63,3 +63,5 @@ www/test.html
 package-log.json
 todo.txt
 data
+.deployment
+.vscode
